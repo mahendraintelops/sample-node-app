@@ -62,13 +62,13 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=raw,value={{sha}},enable=${{ github.ref_type != 'tag' }}
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GH_TOKEN }}
       - name: Build image and push to Docker Hub and GitHub Container Registry
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v4
         with:
           # relative path to the place where source code with Dockerfile is located
           context: .
@@ -76,6 +76,6 @@ jobs:
           tags: ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
           # build on feature branches, push only on main branch
-          push: ${{ github.event.base_ref =='refs/heads/main' }}
+          push: true
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
