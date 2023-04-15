@@ -1,5 +1,6 @@
 # build environment
 FROM node:18.12-alpine as builder
+LABEL org.opencontainers.image.source="https://github.com/mahendraintelops/sample-node-app"
 WORKDIR /app
 COPY . .
 RUN npm install -g npm@latest && npm install --production=false && \
