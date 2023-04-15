@@ -43,8 +43,12 @@ jobs:
     if: gitHub.event_name != 'pull_request'
     needs: build-and-test
     env:
+      REGISTRY: ghcr.io
       IMG_NAME: ${{ github.repository }}
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      id-token: write
     steps:
       - name: Checkout GitHub Action
         uses: actions/checkout@v2
@@ -56,7 +60,7 @@ jobs:
         id: metadata
         uses: docker/metadata-action@v3
         with:
-          images: ghcr.io/${{ env.IMG_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.IMG_NAME }}
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -73,9 +77,20 @@ jobs:
           # relative path to the place where source code with Dockerfile is located
           context: .
           # Note: tags has to be all lower-case
-          tags: ${{ steps.metadata.outputs.tags }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.run_id }}
+          # ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
           # build on feature branches, push only on main branch
           push: true
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
+      - uses: sigstore/cosign-installer@main
+      - name: Sign the images
+        run: |
+          cosign sign \
+            ${{ env.REGISTRY }}/${{ env.IMG_NAME }}:${{ github.run_id }}
+        env:
+          COSIGN_EXPERIMENTAL: 1
+
+      - name: Verify the pushed tags
+        run: cosign verify ${{ env.REGISTRY }}/${{ env.IMG_NAME }}:${{ github.run_id }}
+        env:
+          COSIGN_EXPERIMENTAL: 1
