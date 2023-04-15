@@ -1,3 +1,6 @@
+![CI/CD](https://github.com/mahendraintelops/sample-node-app/workflows/CI/CD/badge.svg)
+[![codecov](https://codecov.io/gh/mahendraintelops/sample-node-app/branch/main/graph/badge.svg)](https://codecov.io/gh/mahendraintelops/sample-node-app)
+
 # sample-node-app
 - To run this code, please clone this repository using below commands.
 ```shell
