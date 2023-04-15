@@ -43,8 +43,8 @@ jobs:
     if: gitHub.event_name != 'pull_request'
     needs: build-and-test
     env:
-      REGISTRY: ghcr.io
-      IMG_NAME: ${{ github.repository }}
+      - REGISTRY: ghcr.io
+      - IMG_NAME: ${{ github.repository }}
     runs-on: ubuntu-latest
     permissions:
       packages: write
