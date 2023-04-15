@@ -40,6 +40,7 @@ jobs:
         run: npm run build --if-present
 
   publish-docker-image:
+    if: gitHub.event_name != 'pull_request'
     needs: build-and-test
     env:
       IMG_NAME: ${{ github.repository }}
@@ -47,7 +48,7 @@ jobs:
     steps:
       - name: Checkout GitHub Action
         uses: actions/checkout@v2
-      # setup Docker buld action
+      # setup Docker build action
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v2
@@ -75,6 +76,6 @@ jobs:
           tags: ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
           # build on feature branches, push only on main branch
-          push: ${{ github.event.base_ref =='refs/heads/main' &&  gitHub.event_name != 'pull_request' }}
+          push: ${{ github.event.base_ref =='refs/heads/main' }}
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
