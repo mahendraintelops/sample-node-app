@@ -25,3 +25,5 @@ app.get('/hello', (req: Request, res: Response) => {
 app.listen(8080, "0.0.0.0", () => {
   console.log(`server is running on PORT 0.0.0.0:8080`);
 });
+
+export default app;
