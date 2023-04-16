@@ -27,7 +27,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ${{ github.repository }}:${{ env.RELEASE_VERSION }}
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.RELEASE_VERSION }}
       - name: Install cosign
         uses: sigstore/cosign-installer@main
       - name: Sign the images
