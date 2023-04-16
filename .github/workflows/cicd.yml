@@ -3,8 +3,6 @@ name: CI/CD
 on:
   push:
     branches: [ "main" ]
-    tags:
-      - 'v*.*.*'
   pull_request:
     branches: [ "main" ]
 
@@ -75,14 +73,13 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GH_TOKEN }}
-      - name: Build image and push to Docker Hub and GitHub Container Registry
+      - name: Build image and push to GitHub Container Registry
         uses: docker/build-push-action@v4
         with:
           # relative path to the place where source code with Dockerfile is located
           context: .
           # Note: tags has to be all lower-case
-          tags: ${{ steps.meta.outputs.tags }}
-#            - ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.run_id }}
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.run_id }}
           # ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
           # build on feature branches, push only on main branch
