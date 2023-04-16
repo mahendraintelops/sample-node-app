@@ -51,7 +51,7 @@ jobs:
     steps:
       - name: Checkout GitHub Action
         uses: actions/checkout@v2
-      # setup Docker build action
+        # setup Docker build action
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v2
@@ -81,15 +81,15 @@ jobs:
           labels: ${{ steps.metadata.outputs.labels }}
           # build on feature branches, push only on main branch
           push: true
-      - uses: sigstore/cosign-installer@main
+      - name: Install cosign
+        uses: sigstore/cosign-installer@main
       - name: Sign the images
         run: |
-          cosign sign \
-            ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.run_id }} -y
+          cosign sign -y ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.run_id }}
         env:
           COSIGN_EXPERIMENTAL: 1
 
       - name: Verify the pushed tags
-        run: cosign verify ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.run_id }}
+        run: cosign verify ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.run_id }} --certificate-identity https://github.com/mahendraintelops/sample-node-app/.github/workflows/cicd.yml@refs/heads/main  --certificate-oidc-issuer https://token.actions.githubusercontent.com
         env:
           COSIGN_EXPERIMENTAL: 1
