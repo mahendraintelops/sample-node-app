@@ -81,13 +81,12 @@ jobs:
           # relative path to the place where source code with Dockerfile is located
           context: .
           # Note: tags has to be all lower-case
-          tags:
-            - ${{ steps.meta.outputs.tags }}
-            - ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.run_id }}
+          tags: ${{ steps.meta.outputs.tags }}
+#            - ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.run_id }}
           # ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
           # build on feature branches, push only on main branch
-          push: ${{ github.ref_type == 'tag' }}
+          push: true
       - name: Install cosign
         uses: sigstore/cosign-installer@main
       - name: Sign the images
