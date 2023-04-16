@@ -88,7 +88,6 @@ jobs:
           cosign sign -y ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.run_id }}
         env:
           COSIGN_EXPERIMENTAL: 1
-
       - name: Verify the pushed tags
         run: cosign verify https://github.com/${{ github.repository }}:${{ github.run_id }} --certificate-identity ${{ env.REGISTRY }}/${{ github.repository }}/.github/workflows/cicd.yml@refs/heads/main  --certificate-oidc-issuer https://token.actions.githubusercontent.com
         env:
